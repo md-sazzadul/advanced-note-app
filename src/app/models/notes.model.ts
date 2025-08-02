@@ -19,4 +19,4 @@ const noteSchema = new Schema<INote>(
   { versionKey: false, timestamps: true }
 );
 
-export const Note = model("Note", noteSchema);
+export const Note = model<INote>("Note", noteSchema);
