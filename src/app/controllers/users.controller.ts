@@ -1,18 +1,32 @@
 import express, { Request, Response } from "express";
+import z from "zod";
 import { User } from "../models/users.model";
 
 export const usersRoutes = express.Router();
 
+const createUserZodSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  age: z.number(),
+  email: z.string(),
+  password: z.string(),
+  role: z.string().optional(),
+});
+
 usersRoutes.post("/create-user", async (req: Request, res: Response) => {
-  const body = req.body;
+  try {
+    const body = await createUserZodSchema.parseAsync(req.body);
 
-  const user = await User.create(body);
+    const user = await User.create(body);
 
-  res.status(201).json({
-    success: true,
-    message: "User created successfully!",
-    user,
-  });
+    res.status(201).json({
+      success: true,
+      message: "User created successfully!",
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 usersRoutes.get("/", async (req: Request, res: Response) => {
